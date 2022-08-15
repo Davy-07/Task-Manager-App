@@ -34,8 +34,22 @@ const getSigleTask = async(req, res) =>{
     }
 }
 
-const updateTask = (req, res) =>{
-    res.send('Task updated');
+const updateTask = async (req, res) =>{
+    try{
+        const {id} = req.params;
+        const data = req.body;
+        const task = await Task.findOneAndUpdate({_id:id},data,{
+            new: true,
+            runValidators: true
+        })
+        if(!task){
+            return res.status(404).json({msg: 'Task not found'});
+        }
+        res.status(201).json({task});
+    }
+    catch(error){
+        res.status(500).json({msg: error});
+    }
 }
 
 const deleteTask = async (req, res) =>{ 
